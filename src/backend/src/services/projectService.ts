@@ -60,18 +60,23 @@ export class ProjectService {
   }
 
   // Create a new project
-  static async createProject(
-      userId: string,
-      data: Pick<IProject, 'name' | 'description' | 'status' | 'priority'>
-  ): Promise<IProject> {
-    const projectDoc = await Project.create({
-      ...data,
-      owner: userId,
-      members: [userId],
-    });
 
-    return projectDoc.populate('owner', 'name email avatar');
-  }
+ static async createProject(
+  userId: string,
+  data: Pick<IProject, 'name' | 'description' | 'status' | 'priority'>
+): Promise<IProject> {
+  const projectDoc = await Project.create({
+    ...data,
+    owner: userId,
+    members: [userId],
+  });
+
+  await projectDoc.populate('owner', 'name email avatar');
+  
+
+  return projectDoc;
+}
+
 
   // Update an existing project
   static async updateProject(

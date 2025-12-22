@@ -3,6 +3,7 @@ import { IAuthRequest } from '../types';
 import { ProjectService } from '../services/projectService';
 
 export const projectController = {
+  
   async getProjects(req: IAuthRequest, res: Response) {
     try {
       const projects = await ProjectService.getProjects(req.user!.id, req.query as any);
