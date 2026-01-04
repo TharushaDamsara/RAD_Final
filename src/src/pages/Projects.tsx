@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Plus } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../store';
 import { fetchProjects, createProject } from '../store/slices/projectSlice';

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../store';
 import { fetchTasks } from '../store/slices/taskSlice';
 import { Card } from '../components/common/Card';
@@ -49,13 +49,12 @@ export function Tasks() {
                   <p className="text-sm text-gray-600 mb-3">{task.description}</p>
                   <div className="flex items-center justify-between text-xs">
                     <span
-                      className={`px-2 py-1 rounded-full ${
-                        task.priority === 'high'
+                      className={`px-2 py-1 rounded-full ${task.priority === 'high'
                           ? 'bg-red-100 text-red-700'
                           : task.priority === 'medium'
-                          ? 'bg-yellow-100 text-yellow-700'
-                          : 'bg-green-100 text-green-700'
-                      }`}
+                            ? 'bg-yellow-100 text-yellow-700'
+                            : 'bg-green-100 text-green-700'
+                        }`}
                     >
                       {task.priority}
                     </span>

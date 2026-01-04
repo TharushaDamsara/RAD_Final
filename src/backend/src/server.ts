@@ -9,9 +9,10 @@ import { apiLimiter } from './middleware/rateLimiter';
 
 // Import routes
 import authRoutes from './routes/authRoutes';
-import projectRoutes from './routes/projectRoutes';
-import taskRoutes from './routes/taskRoutes';
-import analyticsRoutes from './routes/analyticsRoutes';
+import expenseRoutes from './routes/expenseRoutes';
+import aiRoutes from './routes/aiRoutes';
+
+// Isolate app creation and middleware
 const app = express();
 
 // Connect to database
@@ -42,9 +43,8 @@ app.get('/health', (_req, res) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/projects', projectRoutes);
-app.use('/api/tasks', taskRoutes);
-app.use('/api/analytics', analyticsRoutes);
+app.use('/api/expenses', expenseRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Error handling
 app.use(notFound);

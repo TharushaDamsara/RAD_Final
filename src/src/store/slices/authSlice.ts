@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { AuthState, LoginCredentials, RegisterData, User } from '../../types';
 import { authService } from '../../services/authService';
 const initialState: AuthState = {

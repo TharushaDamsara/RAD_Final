@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { CheckCircle, XCircle, Info, AlertTriangle, X } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { removeToast } from '../../store/slices/uiSlice';
@@ -8,15 +8,20 @@ export function ToastContainer() {
   } = useAppSelector(state => state.ui);
   const dispatch = useAppDispatch();
   return <div className="fixed bottom-4 right-4 z-50 space-y-2">
-      {toasts.map(toast => <Toast key={toast.id} {...toast} onClose={() => dispatch(removeToast(toast.id))} />)}
-    </div>;
+    {toasts.map(toast => <Toast key={toast.id} {...toast} onClose={() => dispatch(removeToast(toast.id))} />)}
+  </div>;
+}
+interface ToastProps {
+  id: string;
+  message: string;
+  type: 'success' | 'error' | 'warning' | 'info';
+  onClose: () => void;
 }
 function Toast({
-  id,
   message,
   type,
   onClose
-}: any) {
+}: ToastProps) {
   useEffect(() => {
     const timer = setTimeout(onClose, 5000);
     return () => clearTimeout(timer);
@@ -34,10 +39,10 @@ function Toast({
     info: 'bg-blue-50 border-blue-200'
   };
   return <div className={`flex items-center gap-3 px-4 py-3 rounded-lg border shadow-lg ${colors[type]} min-w-[300px]`}>
-      {icons[type]}
-      <p className="flex-1 text-sm font-medium text-gray-900">{message}</p>
-      <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-        <X className="w-4 h-4" />
-      </button>
-    </div>;
+    {icons[type]}
+    <p className="flex-1 text-sm font-medium text-gray-900">{message}</p>
+    <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+      <X className="w-4 h-4" />
+    </button>
+  </div>;
 }

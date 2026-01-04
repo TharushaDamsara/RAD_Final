@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import { IAuthRequest } from '../types';
 import { verifyAccessToken } from '../config/jwt';
-export const authenticate = async (req: IAuthRequest, res: Response, next: NextFunction): Promise<void> => {
+export const protect = async (req: IAuthRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {

@@ -1,4 +1,4 @@
-import React from 'react';
+
 export function Loader({
   size = 'md'
 }: {
@@ -10,6 +10,6 @@ export function Loader({
     lg: 'w-12 h-12'
   };
   return <div className="flex items-center justify-center">
-      <div className={`${sizes[size]} border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin`} />
-    </div>;
+    <div className={`${sizes[size]} border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin`} />
+  </div>;
 }

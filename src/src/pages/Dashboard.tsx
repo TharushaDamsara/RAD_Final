@@ -1,29 +1,20 @@
-import React, { useEffect } from 'react';
-import { FolderKanban, CheckSquare, Clock, TrendingUp } from 'lucide-react';
+import { useEffect } from 'react';
+import { DollarSign, Activity } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../store';
-import { fetchProjects } from '../store/slices/projectSlice';
-import { fetchTasks } from '../store/slices/taskSlice';
+import { fetchExpenses, fetchExpenseStats } from '../store/slices/expenseSlice';
 import { Card } from '../components/common/Card';
 import { Loader } from '../components/common/Loader';
+
 export function Dashboard() {
   const dispatch = useAppDispatch();
-
-  const {
-    projects = [],
-    loading: projectsLoading
-  } = useAppSelector(state => state.projects);
-
-  const {
-    tasks = [],
-    loading: tasksLoading
-  } = useAppSelector(state => state.tasks);
+  const { expenses, stats, loading } = useAppSelector(state => state.expenses);
 
   useEffect(() => {
-    dispatch(fetchProjects({ limit: 5 }));
-    dispatch(fetchTasks({ limit: 10 }));
+    dispatch(fetchExpenses({ limit: 5 }));
+    dispatch(fetchExpenseStats());
   }, [dispatch]);
 
-  if (projectsLoading || tasksLoading) {
+  if (loading && !stats) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader size="lg" />
@@ -31,30 +22,22 @@ export function Dashboard() {
     );
   }
 
-  const stats = [
+  // Calculate some basic stats if not available from backend yet
+  const totalSpent = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+  const recentTransactionCount = expenses.length;
+
+  const dashboardStats = [
     {
-      label: 'Total Projects',
-      value: projects.length,
-      icon: FolderKanban,
+      label: 'Total Expenses',
+      value: `$${totalSpent.toFixed(2)}`,
+      icon: DollarSign,
       color: 'blue'
     },
     {
-      label: 'Active Tasks',
-      value: tasks.filter(t => t.status !== 'done').length,
-      icon: CheckSquare,
+      label: 'Recent Transactions',
+      value: recentTransactionCount,
+      icon: Activity,
       color: 'green'
-    },
-    {
-      label: 'Pending',
-      value: tasks.filter(t => t.status === 'todo').length,
-      icon: Clock,
-      color: 'yellow'
-    },
-    {
-      label: 'Completed',
-      value: tasks.filter(t => t.status === 'done').length,
-      icon: TrendingUp,
-      color: 'purple'
     }
   ];
 
@@ -63,12 +46,12 @@ export function Dashboard() {
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
         <p className="text-gray-600 mt-1">
-          Welcome back! Here's your overview.
+          Overview of your financial health.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map(({ label, value, icon: Icon, color }) => (
+        {dashboardStats.map(({ label, value, icon: Icon, color }) => (
           <Card key={label} className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -86,31 +69,16 @@ export function Dashboard() {
       <div className="grid lg:grid-cols-2 gap-6">
         <Card className="p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Recent Projects
+            Recent Expenses
           </h2>
           <div className="space-y-3">
-            {projects.slice(0, 5).map(project => (
-              <div key={project._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            {expenses.slice(0, 5).map(expense => (
+              <div key={expense._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div>
-                  <p className="font-medium text-gray-900">{project.name}</p>
-                  <p className="text-sm text-gray-600">{project.status}</p>
+                  <p className="font-medium text-gray-900">{expense.description || expense.category}</p>
+                  <p className="text-sm text-gray-500">{new Date(expense.date).toLocaleDateString()}</p>
                 </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Recent Tasks
-          </h2>
-          <div className="space-y-3">
-            {tasks.slice(0, 5).map(task => (
-              <div key={task._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div>
-                  <p className="font-medium text-gray-900">{task.title}</p>
-                  <p className="text-sm text-gray-600">{task.status}</p>
-                </div>
+                <span className="font-semibold text-gray-900">-${expense.amount.toFixed(2)}</span>
               </div>
             ))}
           </div>
