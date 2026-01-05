@@ -43,42 +43,46 @@ export function Dashboard() {
 
   return (
     <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 mt-1">
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-gray-900 tracking-tight">Dashboard</h1>
+        <p className="text-gray-600 mt-2 text-lg">
           Overview of your financial health.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {dashboardStats.map(({ label, value, icon: Icon, color }) => (
-          <Card key={label} className="p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in">
+        {dashboardStats.map(({ label, value, icon: Icon, color }, index) => (
+          <Card key={label} className={`p-6 border-l-4 border-${color}-500 transform transition-all duration-300 hover:scale-105`} style={{ animationDelay: `${index * 100}ms` }}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">{label}</p>
+                <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">{label}</p>
                 <p className="text-3xl font-bold text-gray-900 mt-2">{value}</p>
               </div>
-              <div className={`p-3 bg-${color}-100 rounded-lg`}>
-                <Icon className={`w-6 h-6 text-${color}-600`} />
+              <div className={`p-4 bg-${color}-50 rounded-2xl shadow-inner`}>
+                <Icon className={`w-8 h-8 text-${color}-600`} />
               </div>
             </div>
           </Card>
         ))}
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Recent Expenses
-          </h2>
-          <div className="space-y-3">
-            {expenses.slice(0, 5).map(expense => (
-              <div key={expense._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div>
-                  <p className="font-medium text-gray-900">{expense.description || expense.category}</p>
-                  <p className="text-sm text-gray-500">{new Date(expense.date).toLocaleDateString()}</p>
+      <div className="grid lg:grid-cols-2 gap-8 animate-slide-up">
+        <Card className="p-6" title="Recent Expenses">
+          <div className="space-y-4">
+            {expenses.slice(0, 5).map((expense, index) => (
+              <div
+                key={expense._id}
+                className="flex items-center justify-between p-4 bg-white/50 rounded-xl hover:bg-white/80 transition-colors border border-gray-100"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-2 h-12 bg-primary-500 rounded-full"></div>
+                  <div>
+                    <p className="font-semibold text-gray-900 text-lg">{expense.description || expense.category}</p>
+                    <p className="text-sm text-gray-500 font-medium">{new Date(expense.date).toLocaleDateString()}</p>
+                  </div>
                 </div>
-                <span className="font-semibold text-gray-900">-${expense.amount.toFixed(2)}</span>
+                <span className="font-bold text-gray-900 text-lg">-${expense.amount.toFixed(2)}</span>
               </div>
             ))}
           </div>

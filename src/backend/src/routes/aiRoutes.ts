@@ -4,8 +4,10 @@ import { protect } from '../middleware/auth';
 
 const router = express.Router();
 
-router.use(protect);
+// Generate budget tips
+router.post('/budget-tips', protect, aiController.getBudgetTips);
 
-router.post('/budget-tips', aiController.getBudgetTips);
+// Chat with AI
+router.post('/chat', protect, aiController.chat);
 
 export default router;

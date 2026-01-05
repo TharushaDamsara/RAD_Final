@@ -16,6 +16,8 @@ export const config = {
   bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || '10', 10),
   rateLimitWindow: parseInt(process.env.RATE_LIMIT_WINDOW || '15', 10),
   rateLimitMax: parseInt(process.env.RATE_LIMIT_MAX || '100', 10),
+  // AI
+  geminiApiKey: process.env.GEMINI_API_KEY?.trim(),
   // Logging
   logLevel: process.env.LOG_LEVEL || 'info'
 };
