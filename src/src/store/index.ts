@@ -4,12 +4,15 @@ import authReducer from './slices/authSlice';
 import expenseReducer from './slices/expenseSlice';
 import aiReducer from './slices/aiSlice';
 import uiReducer from './slices/uiSlice';
+import analyticsReducer from './slices/analyticsSlice';
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     expenses: expenseReducer,
     ai: aiReducer,
-    ui: uiReducer
+    ui: uiReducer,
+    analytics: analyticsReducer
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware({
     serializableCheck: false

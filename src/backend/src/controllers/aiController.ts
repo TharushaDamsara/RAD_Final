@@ -4,6 +4,8 @@ import { Expense } from '../models/Expense';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { config } from '../config/env';
 
+import { AICache } from '../models/AICache';
+
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(config.geminiApiKey || '');
 
@@ -23,8 +25,8 @@ const generateBudgetTips = async (expenses: any[]) => {
     }
 
     try {
-        // Using gemini-2.0-flash-exp as it's available in user list and relatively stable
-        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+        // Using gemini-1.5-flash for higher free-tier quota limits
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         // Prepare data for AI
         const expenseSummary = expenses.map(e =>
@@ -98,7 +100,29 @@ export const aiController = {
                 date: { $gte: thirtyDaysAgo }
             }).limit(50); // Limit to 50 for token efficiency
 
+            // Check Persistent Cache (MongoDB)
+            const cachedData = await AICache.findOne({ userId, type: 'budget_tips' });
+            if (cachedData) {
+                console.log('AI result returned from persistent cache for user:', userId);
+                res.status(200).json({
+                    success: true,
+                    data: {
+                        ...cachedData.data,
+                        analyzedExpenses: expenses.length,
+                        isCached: true
+                    }
+                });
+                return;
+            }
+
             const result = await generateBudgetTips(expenses);
+
+            // Update Persistent Cache (MongoDB)
+            await AICache.findOneAndUpdate(
+                { userId, type: 'budget_tips' },
+                { data: result, createdAt: new Date() },
+                { upsert: true, new: true }
+            );
 
             res.status(200).json({
                 success: true,
@@ -163,7 +187,7 @@ export const aiController = {
             }
 
             try {
-                const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
                 const result = await model.generateContent(systemPrompt);
                 const response = await result.response;
                 const text = response.text();

@@ -4,6 +4,7 @@ export interface IExpense extends Document {
     userId: mongoose.Types.ObjectId;
     amount: number;
     category: 'food' | 'transportation' | 'housing' | 'utilities' | 'entertainment' | 'healthcare' | 'shopping' | 'other';
+    expenseType: 'essential' | 'non-essential';
     description: string;
     date: Date;
     createdAt: Date;
@@ -27,6 +28,12 @@ const expenseSchema = new Schema<IExpense>({
         enum: ['food', 'transportation', 'housing', 'utilities', 'entertainment', 'healthcare', 'shopping', 'other'],
         required: [true, 'Category is required'],
         default: 'other'
+    },
+    expenseType: {
+        type: String,
+        enum: ['essential', 'non-essential'],
+        default: 'essential',
+        required: true
     },
     description: {
         type: String,

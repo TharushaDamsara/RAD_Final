@@ -1,26 +1,14 @@
 import { Router } from 'express';
-import { authenticate } from '../middleware/auth';
+import { protect } from '../middleware/auth';
+import { analyticsController } from '../controllers/analyticsController';
+
 const router = Router();
 
-router.use(authenticate);
+router.use(protect);
 
-const analyticsController = {
-  getOverview: (_req: any, res: any) => res.json({
-    success: true,
-    data: {}
-  }),
-  getProjectAnalytics: (_req: any, res: any) => res.json({
-    success: true,
-    data: []
-  }),
-  getTaskAnalytics: (_req: any, res: any) => res.json({
-    success: true,
-    data: {}
-  })
-};
-
-router.get('/overview', analyticsController.getOverview);
-router.get('/projects', analyticsController.getProjectAnalytics);
-router.get('/tasks', analyticsController.getTaskAnalytics);
+router.get('/summary', analyticsController.getSummary);
+router.get('/trends', analyticsController.getTrends);
+router.get('/categories', analyticsController.getCategories);
+router.get('/insights', analyticsController.getAIInsights);
 
 export default router;

@@ -41,10 +41,13 @@ app.get('/health', (_req, res) => {
   });
 });
 
+import analyticsRoutes from './routes/analyticsRoutes';
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // Error handling
 app.use(notFound);

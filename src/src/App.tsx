@@ -11,9 +11,11 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
 import { Expenses } from './pages/Expenses';
+import { Analytics } from './pages/Analytics';
 import { BudgetAI } from './pages/BudgetAI';
 import { Profile } from './pages/Profile';
 import { NotFound } from './pages/NotFound';
+
 function PrivateRoute({
   children
 }: {
@@ -30,6 +32,7 @@ function PrivateRoute({
   }
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
 }
+
 function AppLayout({
   children
 }: {
@@ -41,6 +44,7 @@ function AppLayout({
     <main className="lg:ml-64 pt-16">{children}</main>
   </div>;
 }
+
 function AppRoutes() {
   return <Routes>
     <Route path="/" element={<Landing />} />
@@ -59,6 +63,12 @@ function AppRoutes() {
       </AppLayout>
     </PrivateRoute>} />
 
+    <Route path="/analyze" element={<PrivateRoute>
+      <AppLayout>
+        <Analytics />
+      </AppLayout>
+    </PrivateRoute>} />
+
     <Route path="/budget-ai" element={<PrivateRoute>
       <AppLayout>
         <BudgetAI />
@@ -74,6 +84,7 @@ function AppRoutes() {
     <Route path="*" element={<NotFound />} />
   </Routes>;
 }
+
 export function App() {
   return <Provider store={store}>
     <BrowserRouter>

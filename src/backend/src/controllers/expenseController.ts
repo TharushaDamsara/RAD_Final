@@ -8,14 +8,15 @@ export const expenseController = {
     async createExpense(req: IAuthRequest, res: Response): Promise<void> {
         try {
             const userId = req.user!.id;
-            const { amount, category, description, date } = req.body;
+            const { amount, category, description, date, expenseType } = req.body;
 
             const expense = await Expense.create({
                 userId,
                 amount,
                 category,
                 description,
-                date: date || new Date()
+                date: date || new Date(),
+                expenseType: expenseType || 'essential'
             });
 
             res.status(201).json({ success: true, data: expense });

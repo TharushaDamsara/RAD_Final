@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, FolderKanban, CheckSquare, BarChart3, X } from 'lucide-react';
+import { LayoutDashboard, FolderKanban, BarChart3, X, Calendar, Brain } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { setSidebarOpen } from '../../store/slices/uiSlice';
 export function Sidebar() {
@@ -15,15 +15,19 @@ export function Sidebar() {
     label: 'Dashboard'
   }, {
     to: '/expenses',
-    icon: BarChart3, // Reusing icon for now
+    icon: Calendar,
     label: 'Expenses'
   }, {
+    to: '/analyze',
+    icon: BarChart3,
+    label: 'Analyze'
+  }, {
     to: '/budget-ai',
-    icon: CheckSquare, // Reusing icon for now - maybe change to Lightbulb if available
+    icon: Brain,
     label: 'Budget AI'
   }, {
     to: '/profile',
-    icon: FolderKanban, // Placeholder
+    icon: FolderKanban,
     label: 'Profile'
   }];
   if (!sidebarOpen) return null;

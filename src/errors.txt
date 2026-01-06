@@ -1,0 +1,4 @@
+﻿src/pages/BudgetAI.tsx(12,75): error TS6133: 'error' is declared but its value is never read.
+src/pages/Projects.tsx(15,68): error TS2339: Property 'projects' does not exist on type '{ auth: AuthState; expenses: ExpenseState; ai: AIState; ui: UIState; analytics: AnalyticsState; }'.
+src/pages/Projects.tsx(122,24): error TS7006: Parameter 'project' implicitly has an 'any' type.
+src/pages/Tasks.tsx(11,65): error TS2339: Property 'tasks' does not exist on type '{ auth: AuthState; expenses: ExpenseState; ai: AIState; ui: UIState; analytics: AnalyticsState; }'.

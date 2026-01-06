@@ -9,7 +9,7 @@ import { Input } from '../components/common/Input';
 
 export function BudgetAI() {
     const dispatch = useAppDispatch();
-    const { tips, forecast, anomalies, chatHistory, loading, chatLoading, error } = useAppSelector(state => state.ai);
+    const { tips, forecast, anomalies, chatHistory, loading, chatLoading } = useAppSelector(state => state.ai);
     const [message, setMessage] = useState('');
     const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -57,8 +57,8 @@ export function BudgetAI() {
                             <span className="text-gray-500 text-sm">est. this month</span>
                         </div>
                         <div className={`px-3 py-1 rounded-full text-sm font-medium inline-block mb-3 ${forecast.trend === 'decreasing' ? 'bg-emerald-100 text-emerald-700' :
-                                forecast.trend === 'stable' ? 'bg-blue-100 text-blue-700' :
-                                    'bg-orange-100 text-orange-700'
+                            forecast.trend === 'stable' ? 'bg-blue-100 text-blue-700' :
+                                'bg-orange-100 text-orange-700'
                             }`}>
                             Trend: {forecast.trend.charAt(0).toUpperCase() + forecast.trend.slice(1)}
                         </div>

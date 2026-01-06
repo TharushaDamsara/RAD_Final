@@ -1,47 +1,191 @@
 import { Response } from 'express';
 import { IAuthRequest } from '../types';
-import { AnalyticsService } from '../services/analyticsService';
+import { Expense } from '../models/Expense';
+import { AICache } from '../models/AICache';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { config } from '../config/env';
+import mongoose from 'mongoose';
+
+const genAI = new GoogleGenerativeAI(config.geminiApiKey || '');
 
 export const analyticsController = {
-  async getDashboardStats(req: IAuthRequest, res: Response): Promise<void> {
+  // GET /api/analytics/summary
+  async getSummary(req: IAuthRequest, res: Response): Promise<void> {
     try {
-      const stats = await AnalyticsService.getOverview(req.user!.id);
-      res.status(200).json({ success: true, data: stats });
-    } catch (error: any) {
-      res.status(error.statusCode || 500).json({ success: false, error: error.message });
-    }
-  },
-
-  async getProjectAnalytics(req: IAuthRequest, res: Response): Promise<void> {
-    try {
-      const analytics = await AnalyticsService.getProjectAnalytics(req.user!.id);
-      res.status(200).json({ success: true, data: analytics });
-    } catch (error: any) {
-      res.status(error.statusCode || 500).json({ success: false, error: error.message });
-    }
-  },
-
-  async getTaskAnalytics(req: IAuthRequest, res: Response): Promise<void> {
-    try {
+      const userId = new mongoose.Types.ObjectId(req.user!.id);
       const { startDate, endDate } = req.query;
-      const analytics = await AnalyticsService.getTaskAnalytics(
-          req.user!.id,
-          startDate as string,
-          endDate as string
-      );
-      res.status(200).json({ success: true, data: analytics });
+
+      const dateFilter: any = { userId };
+      if (startDate || endDate) {
+        dateFilter.date = {};
+        if (startDate) dateFilter.date.$gte = new Date(startDate as string);
+        if (endDate) dateFilter.date.$lte = new Date(endDate as string);
+      }
+
+      const stats = await Expense.aggregate([
+        { $match: dateFilter },
+        {
+          $group: {
+            _id: null,
+            totalExpenses: { $sum: "$amount" },
+            count: { $sum: 1 },
+            avgSpend: { $avg: "$amount" }
+          }
+        }
+      ]);
+
+      const highestSpendDay = await Expense.aggregate([
+        { $match: dateFilter },
+        {
+          $group: {
+            _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+            dailyTotal: { $sum: "$amount" }
+          }
+        },
+        { $sort: { dailyTotal: -1 } },
+        { $limit: 1 }
+      ]);
+
+      const typeBreakdown = await Expense.aggregate([
+        { $match: dateFilter },
+        {
+          $group: {
+            _id: "$expenseType",
+            total: { $sum: "$amount" }
+          }
+        }
+      ]);
+
+      res.status(200).json({
+        success: true,
+        data: {
+          total: stats[0]?.totalExpenses || 0,
+          count: stats[0]?.count || 0,
+          average: stats[0]?.avgSpend || 0,
+          highestSpendDay: highestSpendDay[0] || null,
+          typeBreakdown: typeBreakdown.reduce((acc: any, curr) => {
+            acc[curr._id] = curr.total;
+            return acc;
+          }, {})
+        }
+      });
     } catch (error: any) {
-      res.status(error.statusCode || 500).json({ success: false, error: error.message });
+      res.status(500).json({ success: false, error: error.message });
     }
   },
 
-  async getUserProductivity(req: IAuthRequest, res: Response): Promise<void> {
+  // GET /api/analytics/trends
+  async getTrends(req: IAuthRequest, res: Response): Promise<void> {
     try {
-      const { period } = req.query;
-      const productivity = await AnalyticsService.getUserProductivity(req.user!.id, period as string);
-      res.status(200).json({ success: true, data: productivity });
+      const userId = new mongoose.Types.ObjectId(req.user!.id);
+      const { days = 30 } = req.query;
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - Number(days));
+
+      const trends = await Expense.aggregate([
+        {
+          $match: {
+            userId,
+            date: { $gte: startDate }
+          }
+        },
+        {
+          $group: {
+            _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+            amount: { $sum: "$amount" }
+          }
+        },
+        { $sort: { "_id": 1 } }
+      ]);
+
+      res.status(200).json({
+        success: true,
+        data: trends.map(t => ({ date: t._id, amount: t.amount }))
+      });
     } catch (error: any) {
-      res.status(error.statusCode || 500).json({ success: false, error: error.message });
+      res.status(500).json({ success: false, error: error.message });
+    }
+  },
+
+  // GET /api/analytics/categories
+  async getCategories(req: IAuthRequest, res: Response): Promise<void> {
+    try {
+      const userId = new mongoose.Types.ObjectId(req.user!.id);
+      const categories = await Expense.aggregate([
+        { $match: { userId } },
+        {
+          $group: {
+            _id: "$category",
+            value: { $sum: "$amount" }
+          }
+        },
+        { $sort: { value: -1 } }
+      ]);
+
+      res.status(200).json({
+        success: true,
+        data: categories.map(c => ({ name: c._id, value: c.value }))
+      });
+    } catch (error: any) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  },
+
+  // GET /api/analytics/insights (AI Powered)
+  async getAIInsights(req: IAuthRequest, res: Response): Promise<void> {
+    try {
+      const userId = req.user!.id;
+
+      // Check cache
+      const cached = await AICache.findOne({ userId, type: 'analytics_insight' });
+      if (cached) {
+        res.status(200).json({ success: true, data: cached.data });
+        return;
+      }
+
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+      const expenses = await Expense.find({
+        userId,
+        date: { $gte: thirtyDaysAgo }
+      }).sort({ date: -1 });
+
+      if (expenses.length === 0) {
+        res.status(200).json({ success: true, data: "Add some expenses to get AI insights!" });
+        return;
+      }
+
+      const summary = expenses.map(e =>
+        `- $${e.amount} on ${e.category} (${e.expenseType}) - ${e.date.toLocaleDateString()}`
+      ).join('\n');
+
+      const prompt = `
+                Analyze these expenses from the last 30 days:
+                ${summary}
+
+                Provide exactly 3 bullet points of deep financial insights. 
+                Identify spending spikes, unusual patterns, or lifestyle inflation.
+                Be specific about amounts and categories.
+                Format: Just the bullet points.
+            `;
+
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const result = await model.generateContent(prompt);
+      const insights = result.response.text();
+
+      // Store in cache (Note: AICache model might need a 'type' field if we use it for multiple things, 
+      // but for now we'll just use a dedicated entry for insights)
+      await AICache.findOneAndUpdate(
+        { userId, type: 'analytics_insight' },
+        { data: insights, createdAt: new Date() },
+        { upsert: true }
+      );
+
+      res.status(200).json({ success: true, data: insights });
+    } catch (error: any) {
+      console.error('AI Insight Error:', error);
+      res.status(200).json({ success: true, data: "Unable to generate insights at the moment. Try again later!" });
     }
   }
 };
