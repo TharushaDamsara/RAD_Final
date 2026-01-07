@@ -170,8 +170,20 @@ export const analyticsController = {
                 Format: Just the bullet points.
             `;
 
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-      const result = await model.generateContent(prompt);
+      let result;
+      try {
+        const model = genAI.getGenerativeModel({ model: config.geminiModel });
+        result = await model.generateContent(prompt);
+      } catch (err: any) {
+        if (err.status === 404 && config.geminiModel !== 'gemini-pro') {
+          console.warn(`Fallback: ${config.geminiModel} not found, trying gemini-pro`);
+          const fallbackModel = genAI.getGenerativeModel({ model: 'gemini-pro' });
+          result = await fallbackModel.generateContent(prompt);
+        } else {
+          throw err;
+        }
+      }
+
       const insights = result.response.text();
 
       // ONLY store in cache on success

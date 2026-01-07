@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
-dotenv.config();
+import path from 'path';
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 export const config = {
   // Server
   nodeEnv: process.env.NODE_ENV || 'development',
@@ -18,6 +19,7 @@ export const config = {
   rateLimitMax: parseInt(process.env.RATE_LIMIT_MAX || '100', 10),
   // AI
   geminiApiKey: process.env.GEMINI_API_KEY?.trim(),
+  geminiModel: process.env.GEMINI_MODEL || 'gemini-pro',
   // Logging
   logLevel: process.env.LOG_LEVEL || 'info'
 };

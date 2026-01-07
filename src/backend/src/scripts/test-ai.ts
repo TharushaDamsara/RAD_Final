@@ -23,23 +23,25 @@ async function testAI() {
         // Note: The SDK might not expose listModels directly easily, 
         // but we can try a direct generation test.
 
-        try {
-            console.log('🤖 Testing gemini-1.5-flash-latest...');
-            const modelFlash = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
-            const resultFlash = await modelFlash.generateContent("Hello?");
-            console.log('✅ gemini-1.5-flash-latest Response:', resultFlash.response.text());
-            return;
-        } catch (error: any) {
-            console.error('❌ Error with gemini-1.5-flash-latest:', error.message);
-        }
+        const modelsToTest = [
+            "gemini-1.5-flash",
+            "gemini-1.5-flash-latest",
+            "gemini-pro",
+            "gemini-pro-latest",
+            "gemini-1.0-pro"
+        ];
 
-        try {
-            console.log('🤖 Testing gemini-1.0-pro...');
-            const modelPro = genAI.getGenerativeModel({ model: "gemini-1.0-pro" });
-            const resultPro = await modelPro.generateContent("Hello?");
-            console.log('✅ gemini-1.0-pro Response:', resultPro.response.text());
-        } catch (error: any) {
-            console.error('❌ Error with gemini-1.0-pro:', error.message);
+        for (const modelName of modelsToTest) {
+            try {
+                console.log(`🤖 Testing ${modelName}...`);
+                const model = genAI.getGenerativeModel({ model: modelName });
+                const result = await model.generateContent("Hello?");
+                console.log(`✅ ${modelName} Response:`, result.response.text());
+                console.log(`💡 SUGGESTION: Use ${modelName} as the default model.`);
+                continue;
+            } catch (error: any) {
+                console.error(`❌ Error with ${modelName}:`, error.message);
+            }
         }
     } catch (error: any) {
         console.error('❌ Global Error:', error);

@@ -25,9 +25,6 @@ const generateBudgetTips = async (expenses: any[]) => {
     }
 
     try {
-        // Using gemini-1.5-flash for higher free-tier quota limits
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
         // Prepare data for AI
         const expenseSummary = expenses.map(e =>
             `- $${e.amount} on ${e.category} (${e.description || 'no description'})`
@@ -57,7 +54,22 @@ const generateBudgetTips = async (expenses: any[]) => {
             Return ONLY the valid JSON string. Do not include markdown formatting or 'json' tags.
         `;
 
-        const result = await model.generateContent(prompt);
+        let result;
+        try {
+            const model = genAI.getGenerativeModel({ model: config.geminiModel });
+            result = await model.generateContent(prompt);
+        } catch (err: any) {
+            if (err.status === 404 && config.geminiModel !== 'gemini-pro') {
+                console.warn(`Fallback: ${config.geminiModel} not found, trying gemini-1.5-pro for tips`);
+                const fallbackModel = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+                result = await fallbackModel.generateContent(prompt);
+            } else {
+                throw err;
+            }
+        }
+
+
+
         const response = await result.response;
         const text = response.text();
 
@@ -67,6 +79,7 @@ const generateBudgetTips = async (expenses: any[]) => {
         return JSON.parse(cleanerText);
     } catch (error) {
         // Silent fallback for production stability
+        console.error('AI Error Details:', error);
         console.warn('AI Usage Note: Quota limit reached or API error, returning cached/mock insights.');
         return {
             tips: [
@@ -190,8 +203,19 @@ export const aiController = {
             }
 
             try {
-                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-                const result = await model.generateContent(systemPrompt);
+                let result;
+                try {
+                    const model = genAI.getGenerativeModel({ model: config.geminiModel });
+                    result = await model.generateContent(systemPrompt);
+                } catch (err: any) {
+                    if (err.status === 404 && config.geminiModel !== 'gemini-pro') {
+                        console.warn(`Fallback: ${config.geminiModel} not found, trying gemini-pro for chat`);
+                        const fallbackModel = genAI.getGenerativeModel({ model: 'gemini-pro' });
+                        result = await fallbackModel.generateContent(systemPrompt);
+                    } else {
+                        throw err;
+                    }
+                }
                 const response = await result.response;
                 const text = response.text();
                 res.status(200).json({ success: true, data: { response: text } });
