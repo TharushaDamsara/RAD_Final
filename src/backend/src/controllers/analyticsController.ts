@@ -174,8 +174,7 @@ export const analyticsController = {
       const result = await model.generateContent(prompt);
       const insights = result.response.text();
 
-      // Store in cache (Note: AICache model might need a 'type' field if we use it for multiple things, 
-      // but for now we'll just use a dedicated entry for insights)
+      // ONLY store in cache on success
       await AICache.findOneAndUpdate(
         { userId, type: 'analytics_insight' },
         { data: insights, createdAt: new Date() },
@@ -185,7 +184,12 @@ export const analyticsController = {
       res.status(200).json({ success: true, data: insights });
     } catch (error: any) {
       console.error('AI Insight Error:', error);
-      res.status(200).json({ success: true, data: "Unable to generate insights at the moment. Try again later!" });
+      // Explicitly return a warning but do NOT cache it
+      res.status(200).json({
+        success: true,
+        data: "AI is busy analyzing millions of data points right now! 🤖✨ Your custom insights will be back in a few minutes. In the meantime, check your spending trends above.",
+        isFallback: true
+      });
     }
   }
 };

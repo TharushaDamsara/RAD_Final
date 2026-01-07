@@ -11,7 +11,7 @@ const AICacheSchema: Schema = new Schema({
     userId: { type: String, required: true },
     type: { type: String, default: 'budget_tips', index: true },
     data: { type: Object, required: true },
-    createdAt: { type: Date, default: Date.now, expires: 1800 }
+    createdAt: { type: Date, default: Date.now, expires: 86400 }
 });
 
 // Compound index for efficient lookup

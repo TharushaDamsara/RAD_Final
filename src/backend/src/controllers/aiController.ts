@@ -80,7 +80,8 @@ const generateBudgetTips = async (expenses: any[]) => {
                 trend: 'stable',
                 reason: 'Forecast based on current total (AI unavailable).'
             },
-            anomalies: []
+            anomalies: [],
+            isFallback: true
         };
     }
 };
@@ -117,12 +118,14 @@ export const aiController = {
 
             const result = await generateBudgetTips(expenses);
 
-            // Update Persistent Cache (MongoDB)
-            await AICache.findOneAndUpdate(
-                { userId, type: 'budget_tips' },
-                { data: result, createdAt: new Date() },
-                { upsert: true, new: true }
-            );
+            // ONLY update cache if it's NOT a fallback result
+            if (!result.isFallback) {
+                await AICache.findOneAndUpdate(
+                    { userId, type: 'budget_tips' },
+                    { data: result, createdAt: new Date() },
+                    { upsert: true, new: true }
+                );
+            }
 
             res.status(200).json({
                 success: true,
