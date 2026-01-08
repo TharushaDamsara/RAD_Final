@@ -8,6 +8,8 @@ interface AuthResponse {
 
 export const authService = {
   register(data: RegisterData): Promise<AuthResponse> {
+    console.log('Register data:', data);
+
     return api.post('/auth/register', data).then(res => res.data);
   },
 
