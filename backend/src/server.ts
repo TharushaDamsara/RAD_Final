@@ -23,10 +23,21 @@ connectDatabase();
 
 // Middleware
 app.use(helmet());
+const allowedOrigins = [config.frontendUrl, 'http://localhost:5173', 'http://localhost:5174'];
+
 app.use(cors({
-  origin: [config.frontendUrl, 'http://localhost:5173', 'http://localhost:5174'],
+  origin: (origin, callback) => {
+    // allow requests with no origin (like Postman or server-to-server)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS policy: origin ${origin} not allowed`));
+    }
+  },
   credentials: true
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
