@@ -18,11 +18,28 @@ export const register = createAsyncThunk(
       localStorage.setItem('accessToken', response.data.accessToken);
       localStorage.setItem('refreshToken', response.data.refreshToken);
 
-      return response.data; // ✅ payload
+      return response.data;
     } catch (error: any) {
-      // Make sure it's always a string
       const message =
         error.response?.data?.message || error.message || 'Registration failed';
+      return rejectWithValue(message);
+    }
+  }
+);
+
+export const login = createAsyncThunk(
+  'auth/login',
+  async (credentials: LoginCredentials, { rejectWithValue }) => {
+    try {
+      const response = await authService.login(credentials);
+
+      // save tokens
+      localStorage.setItem('accessToken', response.data.accessToken);
+      localStorage.setItem('refreshToken', response.data.refreshToken);
+
+      return response.data;
+    } catch (error: any) {
+      const message = error.response?.data?.message || error.message || 'Login failed';
       return rejectWithValue(message);
     }
   }
