@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store';
-import { register } from '../store/slices/authSlice';
+import { registerUser } from '../store/slices/authSlice';
 import { Input } from '../components/common/Input';
 import { Button } from '../components/common/Button';
 import { Loader } from '../components/common/Loader';
@@ -19,8 +19,8 @@ export function Register() {
   });
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = await dispatch(register(formData));
-    if (register.fulfilled.match(result)) {
+    const result = await dispatch(registerUser(formData));
+    if (registerUser.fulfilled.match(result)) {
       navigate('/dashboard');
     }
   };

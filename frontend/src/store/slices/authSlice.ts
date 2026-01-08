@@ -8,7 +8,7 @@ const initialState: AuthState = {
   loading: false,
   error: null
 };
-export const register = createAsyncThunk(
+export const registerUser = createAsyncThunk(
   'auth/register',
   async (data: RegisterData, { rejectWithValue }) => {
     try {
@@ -27,7 +27,7 @@ export const register = createAsyncThunk(
   }
 );
 
-export const login = createAsyncThunk(
+export const loginUser = createAsyncThunk(
   'auth/login',
   async (credentials: LoginCredentials, { rejectWithValue }) => {
     try {
@@ -81,29 +81,29 @@ const authSlice = createSlice({
   },
   extraReducers: builder => {
     // Register
-    builder.addCase(register.pending, state => {
+    builder.addCase(registerUser.pending, state => {
       state.loading = true;
       state.error = null;
-    }).addCase(register.fulfilled, (state, action) => {
+    }).addCase(registerUser.fulfilled, (state, action) => {
       state.loading = false;
       state.user = action.payload.user;
       state.accessToken = action.payload.accessToken;
       state.isAuthenticated = true;
-    }).addCase(register.rejected, (state, action) => {
+    }).addCase(registerUser.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
     });
 
     // Login
-    builder.addCase(login.pending, state => {
+    builder.addCase(loginUser.pending, state => {
       state.loading = true;
       state.error = null;
-    }).addCase(login.fulfilled, (state, action) => {
+    }).addCase(loginUser.fulfilled, (state, action) => {
       state.loading = false;
       state.user = action.payload.user;
       state.accessToken = action.payload.accessToken;
       state.isAuthenticated = true;
-    }).addCase(login.rejected, (state, action) => {
+    }).addCase(loginUser.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
     });

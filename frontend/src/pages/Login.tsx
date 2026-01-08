@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store';
-import { login } from '../store/slices/authSlice';
+import { loginUser } from '../store/slices/authSlice';
 import { Input } from '../components/common/Input';
 import { Button } from '../components/common/Button';
 import { Loader } from '../components/common/Loader';
@@ -18,8 +18,8 @@ export function Login() {
   });
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = await dispatch(login(formData));
-    if (login.fulfilled.match(result)) {
+    const result = await dispatch(loginUser(formData));
+    if (loginUser.fulfilled.match(result)) {
       navigate('/dashboard');
     }
   };
