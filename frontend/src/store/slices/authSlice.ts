@@ -8,30 +8,26 @@ const initialState: AuthState = {
   loading: false,
   error: null
 };
-export const register = createAsyncThunk('auth/register', async (data: RegisterData, {
-  rejectWithValue
-}) => {
-  try {
-    const response = await authService.register(data);
-    localStorage.setItem('accessToken', response.data.accessToken);
-    localStorage.setItem('refreshToken', response.data.refreshToken);
-    return response.data;
-  } catch (error: any) {
-    return rejectWithValue(error.response?.data?.error || 'Registration failed');
+export const register = createAsyncThunk(
+  'auth/register',
+  async (data: RegisterData, { rejectWithValue }) => {
+    try {
+      const response = await authService.register(data);
+
+      // save tokens
+      localStorage.setItem('accessToken', response.data.accessToken);
+      localStorage.setItem('refreshToken', response.data.refreshToken);
+
+      return response.data; // ✅ payload
+    } catch (error: any) {
+      // Make sure it's always a string
+      const message =
+        error.response?.data?.message || error.message || 'Registration failed';
+      return rejectWithValue(message);
+    }
   }
-});
-export const login = createAsyncThunk('auth/login', async (credentials: LoginCredentials, {
-  rejectWithValue
-}) => {
-  try {
-    const response = await authService.login(credentials);
-    localStorage.setItem('accessToken', response.data.accessToken);
-    localStorage.setItem('refreshToken', response.data.refreshToken);
-    return response.data;
-  } catch (error: any) {
-    return rejectWithValue(error.response?.data?.error || 'Login failed');
-  }
-});
+);
+
 export const getCurrentUser = createAsyncThunk('auth/getCurrentUser', async (_, {
   rejectWithValue
 }) => {

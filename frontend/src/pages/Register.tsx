@@ -50,9 +50,12 @@ export function Register() {
             password: e.target.value
           })} required />
 
-          {error && <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
-            {error}
-          </div>}
+          {error && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+              {typeof error === 'string' ? error : JSON.stringify(error)}
+            </div>
+          )}
+
 
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? <Loader size="sm" /> : 'Create Account'}
