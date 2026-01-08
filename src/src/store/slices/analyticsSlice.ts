@@ -10,6 +10,9 @@ interface SummaryData {
         essential: number;
         'non-essential': number;
     };
+    totalIncome: number;
+    balance: number;
+    savingsRate: number;
 }
 
 interface TrendData {

@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { IAuthRequest } from '../types';
 import { Expense } from '../models/Expense';
+import { Income } from '../models/Income';
 import { AICache } from '../models/AICache';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { config } from '../config/env';
@@ -56,10 +57,26 @@ export const analyticsController = {
         }
       ]);
 
+      const incomeStats = await Income.aggregate([
+        { $match: dateFilter },
+        {
+          $group: {
+            _id: null,
+            totalIncome: { $sum: "$amount" }
+          }
+        }
+      ]);
+
+      const totalIncome = incomeStats[0]?.totalIncome || 0;
+      const totalExpenses = stats[0]?.totalExpenses || 0;
+
       res.status(200).json({
         success: true,
         data: {
-          total: stats[0]?.totalExpenses || 0,
+          total: totalExpenses,
+          totalIncome,
+          balance: totalIncome - totalExpenses,
+          savingsRate: totalIncome > 0 ? ((totalIncome - totalExpenses) / totalIncome) * 100 : 0,
           count: stats[0]?.count || 0,
           average: stats[0]?.avgSpend || 0,
           highestSpendDay: highestSpendDay[0] || null,

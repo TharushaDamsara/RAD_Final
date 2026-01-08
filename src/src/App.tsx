@@ -11,6 +11,7 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
 import { Expenses } from './pages/Expenses';
+import { Income } from './pages/Income';
 import { Analytics } from './pages/Analytics';
 import { BudgetAI } from './pages/BudgetAI';
 import { Profile } from './pages/Profile';
@@ -60,6 +61,12 @@ function AppRoutes() {
     <Route path="/expenses" element={<PrivateRoute>
       <AppLayout>
         <Expenses />
+      </AppLayout>
+    </PrivateRoute>} />
+
+    <Route path="/income" element={<PrivateRoute>
+      <AppLayout>
+        <Income />
       </AppLayout>
     </PrivateRoute>} />
 

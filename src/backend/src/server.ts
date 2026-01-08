@@ -10,6 +10,7 @@ import { apiLimiter } from './middleware/rateLimiter';
 // Import routes
 import authRoutes from './routes/authRoutes';
 import expenseRoutes from './routes/expenseRoutes';
+import incomeRoutes from './routes/incomeRoutes';
 import aiRoutes from './routes/aiRoutes';
 
 // Isolate app creation and middleware
@@ -46,6 +47,7 @@ import analyticsRoutes from './routes/analyticsRoutes';
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/expenses', expenseRoutes);
+app.use('/api/incomes', incomeRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/analytics', analyticsRoutes);
 

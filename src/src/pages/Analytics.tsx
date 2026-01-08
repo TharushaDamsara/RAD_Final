@@ -63,8 +63,8 @@ export function Analytics() {
               key={d}
               onClick={() => setDays(d)}
               className={`px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 ${days === d
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 scale-105'
-                  : 'text-gray-500 hover:bg-gray-100'
+                ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 scale-105'
+                : 'text-gray-500 hover:bg-gray-100'
                 }`}
             >
               {d} Days
@@ -79,27 +79,27 @@ export function Analytics() {
           title="Total Expenses"
           value={`$${summary?.total.toLocaleString() || '0'}`}
           icon={<DollarSign className="w-6 h-6" />}
-          trend="+12% from last period"
+          trend={`${summary?.count || 0} transactions`}
           color="blue"
         />
         <SummaryCard
-          title="Daily Average"
-          value={`$${summary?.average.toFixed(2) || '0'}`}
-          icon={<Activity className="w-6 h-6" />}
-          trend="Steady spending"
+          title="Total Income"
+          value={`$${summary?.totalIncome?.toLocaleString() || '0'}`}
+          icon={<TrendingUp className="w-6 h-6" />}
+          trend={`Balance: $${summary?.balance?.toLocaleString() || 0}`}
           color="emerald"
         />
         <SummaryCard
-          title="Transactions"
-          value={summary?.count || '0'}
-          icon={<Calendar className="w-6 h-6" />}
-          trend="Total activities"
+          title="Savings Rate"
+          value={`${summary?.savingsRate?.toFixed(1) || '0'}%`}
+          icon={<Zap className="w-6 h-6" />}
+          trend="of total income"
           color="purple"
         />
         <SummaryCard
           title="Max Daily Spend"
           value={`$${summary?.highestSpendDay?.dailyTotal.toLocaleString() || '0'}`}
-          icon={<TrendingUp className="w-6 h-6" />}
+          icon={<AlertCircle className="w-6 h-6" />}
           trend={summary?.highestSpendDay?._id || 'No data'}
           color="amber"
           isMax

@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, FolderKanban, BarChart3, X, Calendar, Brain } from 'lucide-react';
+import { LayoutDashboard, FolderKanban, BarChart3, X, Calendar, Brain, TrendingUp } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { setSidebarOpen } from '../../store/slices/uiSlice';
 export function Sidebar() {
@@ -17,6 +17,10 @@ export function Sidebar() {
     to: '/expenses',
     icon: Calendar,
     label: 'Expenses'
+  }, {
+    to: '/income',
+    icon: TrendingUp,
+    label: 'Income'
   }, {
     to: '/analyze',
     icon: BarChart3,
