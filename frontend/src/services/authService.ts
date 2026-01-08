@@ -3,36 +3,28 @@ import { LoginCredentials, RegisterData, User } from '../types';
 
 interface AuthResponse {
   success: boolean;
-  data: {
-    user: User;
-    accessToken: string;
-    refreshToken: string;
-  };
+  data: { user: User; accessToken: string; refreshToken: string };
 }
 
 export const authService = {
-  async register(data: RegisterData): Promise<AuthResponse> {
-    const response = await api.post('/auth/register', data);
-    return response.data;
+  register(data: RegisterData): Promise<AuthResponse> {
+    return api.post('/auth/register', data).then(res => res.data);
   },
 
-  async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    const response = await api.post('/auth/login', credentials);
-    return response.data;
+  login(credentials: LoginCredentials): Promise<AuthResponse> {
+    return api.post('/auth/login', credentials).then(res => res.data);
   },
 
-  async getCurrentUser(): Promise<{ success: boolean; data: User }> {
-    const response = await api.get('/auth/me');
-    return response.data;
+  getCurrentUser(): Promise<{ success: boolean; data: User }> {
+    return api.get('/auth/me').then(res => res.data);
   },
 
-  async updateProfile(data: Partial<User>): Promise<{ success: boolean; data: User }> {
-    const response = await api.put('/auth/profile', data);
-    return response.data;
+  updateProfile(data: Partial<User>): Promise<{ success: boolean; data: User }> {
+    return api.put('/auth/profile', data).then(res => res.data);
   },
 
-  async changePassword(currentPassword: string, newPassword: string): Promise<void> {
-    await api.put('/auth/password', { currentPassword, newPassword });
+  changePassword(currentPassword: string, newPassword: string): Promise<void> {
+    return api.put('/auth/password', { currentPassword, newPassword }).then();
   },
 
   logout() {
