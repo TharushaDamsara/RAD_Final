@@ -6,6 +6,8 @@ import { config } from './config/env';
 import { connectDatabase } from './config/database';
 import { errorHandler, notFound } from './middleware/errorHandler';
 import { apiLimiter } from './middleware/rateLimiter';
+import dotenv from "dotenv";
+dotenv.config();
 
 // Import routes
 import authRoutes from './routes/authRoutes';
