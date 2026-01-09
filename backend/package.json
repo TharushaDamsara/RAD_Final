@@ -1,7 +1,7 @@
 {
-  "name": "task-management-backend",
+  "name": "expenseai-backend",
   "version": "1.0.0",
-  "description": "Task Management System Backend API",
+  "description": "Personal Expense & Income Tracker with AI Analytics Backend API",
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon src/server.ts",
@@ -11,13 +11,14 @@
     "lint": "eslint . --ext .ts"
   },
   "keywords": [
-    "task-management",
+    "expense-tracker",
+    "income-tracker",
+    "ai-analytics",
     "mern",
     "typescript",
-    "express",
-    "mongodb"
+    "gemini-ai"
   ],
-  "author": "Your Name",
+  "author": "Tharusha Damsara",
   "license": "MIT",
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

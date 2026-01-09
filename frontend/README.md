@@ -1,6 +1,6 @@
-# Task Management System - MERN Stack Application
+# Personal Expense & Income Tracker with AI Analytics (ExpenseAI)
 
-A full-stack task management application built with MongoDB, Express.js, React, and Node.js (MERN) with TypeScript, designed for the Rapid Application Development (RAD) coursework.
+A full-stack financial management application built with MongoDB, Express.js, React, and Node.js (MERN) with TypeScript, designed for the Rapid Application Development (RAD) coursework.
 
 ![Tech Stack](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
@@ -31,36 +31,33 @@ A full-stack task management application built with MongoDB, Express.js, React, 
   - Access and refresh token management
   - Protected routes and API endpoints
 
-- **Project Management (CRUD)**
-  - Create, read, update, and delete projects
-  - Project ownership and member management
-  - Status tracking (Planning, Active, Completed, On Hold)
-  - Priority levels (Low, Medium, High, Critical)
-  - Pagination and filtering
-
-- **Task Management (CRUD)**
-  - Complete task lifecycle management
-  - Task assignment to team members
-  - Status workflow (Todo, In Progress, Review, Done)
-  - Due date tracking
-  - Tag-based organization
+- **Income & Expense Management (CRUD)**
+  - Create, read, update, and delete transactions
+  - Categorization of income and expenses
+  - Transaction date and description tracking
+  - Recurring entry support
   - Advanced filtering and search
 
 - **Analytics Dashboard (Advanced Feature)**
   - Real-time statistics and metrics
-  - Interactive charts (Bar, Line, Pie)
-  - Project completion rates
-  - Task distribution analysis
-  - User performance metrics
-  - Time-based trends
+  - Interactive charts (Bar, Line, Pie) using Recharts
+  - Monthly income vs expense comparison
+  - Category-based spending distribution
+  - Savings calculations and trend analysis
+
+- **AI Budget Assistant**
+  - Personalized budget recommendations
+  - Savings tips based on spending patterns
+  - AI-driven financial insights using Gemini API
+  - Cached AI responses for performance
 
 ### Additional Features
 - Responsive design (mobile, tablet, desktop)
-- Modern UI inspired by Linear and Notion
+- Modern UI with glassmorphism effects
 - Toast notifications for user feedback
 - Loading states and error handling
-- Profile management
-- Dark mode support (UI slice ready)
+- Profile management and statistics
+- Dark mode support
 
 ## 🛠 Tech Stack
 
@@ -72,6 +69,7 @@ A full-stack task management application built with MongoDB, Express.js, React, 
 - **Recharts** for data visualization
 - **Axios** for API calls
 - **Lucide React** for icons
+- **Framer Motion** for animations
 
 ### Backend
 - **Node.js** with Express.js
@@ -80,10 +78,12 @@ A full-stack task management application built with MongoDB, Express.js, React, 
 - **JWT** for authentication
 - **bcryptjs** for password hashing
 - **Express Validator** for input validation
+- **Google Generative AI** (Gemini) for budget insights
+- **Helmet & Morgan** for security and logging
 
 ### DevOps & Deployment
 - **Frontend**: Vercel
-- **Backend**: Render/Railway
+- **Backend**: Render
 - **Database**: MongoDB Atlas
 - **Version Control**: Git & GitHub
 
@@ -95,7 +95,7 @@ Comprehensive system design documentation is available in [SYSTEM_DESIGN.md](./S
 - Use Case Diagram
 - System Architecture Diagram
 - API Endpoints Documentation
-- Sequence Diagrams (Login, CRUD, Dashboard)
+- Sequence Diagrams (Login, CRUD, AI Insights)
 - Redux State Management Diagram
 - Security and Performance Considerations
 
@@ -106,13 +106,13 @@ Comprehensive system design documentation is available in [SYSTEM_DESIGN.md](./S
 frontend/
 ├── src/
 │   ├── components/
-│   │   ├── common/          # Reusable UI components
+│   │   ├── common/          # Reusable UI components (Card, Loader, Toast)
 │   │   ├── layout/          # Layout components (Navbar, Sidebar)
-│   │   ├── projects/        # Project-specific components
-│   │   ├── tasks/           # Task-specific components
+│   │   ├── income/          # Income-specific components
+│   │   ├── expenses/        # Expense-specific components
 │   │   └── charts/          # Chart components
-│   ├── pages/               # Page components
-│   ├── store/               # Redux store and slices
+│   ├── pages/               # Page components (Dashboard, Landing, Analytics)
+│   ├── store/               # Redux store and slices (auth, expense, income, ai)
 │   ├── services/            # API service functions
 │   ├── hooks/               # Custom React hooks
 │   ├── utils/               # Utility functions
@@ -123,11 +123,11 @@ frontend/
 ```
 backend/
 ├── src/
-│   ├── models/              # Mongoose models
+│   ├── models/              # Mongoose models (User, Expense, Income, AICache)
 │   ├── controllers/         # Route controllers
 │   ├── routes/              # API routes
-│   ├── services/            # Business logic
-│   ├── middleware/          # Custom middleware
+│   ├── services/            # Business logic (AI service)
+│   ├── middleware/          # Custom middleware (Auth, Error)
 │   ├── config/              # Configuration files
 │   ├── utils/               # Utility functions
 │   └── types/               # TypeScript types
@@ -138,71 +138,47 @@ backend/
 ### Prerequisites
 - Node.js (v16 or higher)
 - npm or yarn
-- MongoDB Atlas account (or local MongoDB)
+- MongoDB Atlas account
+- Google Gemini API Key (for AI features)
 - Git
 
 ### Clone the Repository
 ```bash
-git clone https://github.com/yourusername/task-management-system.git
-cd task-management-system
+git clone https://github.com/TharushaDamsara/RAD_Final.git
+cd RAD_Final
 ```
 
 ### Frontend Setup
 ```bash
-# Navigate to frontend directory
 cd frontend
-
-# Install dependencies
 npm install
-
-# Create .env file
-cp .env .env
-
-# Update .env with your configuration
+npm run dev
 ```
 
 ### Backend Setup
 ```bash
-# Navigate to backend directory
 cd backend
-
-# Install dependencies
 npm install
-
-# Create .env file
-cp .env .env
-
-# Update .env with your configuration
+# Create .env based on environment variables section
+npm run dev
 ```
 
 ## 🔐 Environment Variables
 
 ### Frontend (.env)
 ```env
-REACT_APP_API_URL=http://localhost:5000/api
-REACT_APP_ENV=development
+VITE_API_URL=http://localhost:5000/api
 ```
 
 ### Backend (.env)
 ```env
-# Server Configuration
-NODE_ENV=development
 PORT=5000
-FRONTEND_URL=http://localhost:3000
-
-# Database
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/taskmanager?retryWrites=true&w=majority
-
-# JWT Configuration
-JWT_SECRET=your_super_secret_jwt_key_here_change_in_production
-JWT_REFRESH_SECRET=your_refresh_token_secret_here
-JWT_EXPIRE=15m
-JWT_REFRESH_EXPIRE=7d
-
-# Security
-BCRYPT_ROUNDS=10
-RATE_LIMIT_WINDOW=15
-RATE_LIMIT_MAX=100
+MONGODB_URI=your_mongodb_uri
+JWT_SECRET=your_jwt_secret
+JWT_REFRESH_SECRET=your_refresh_secret
+GEMINI_API_KEY=your_google_gemini_api_key
+GEMINI_MODEL=gemini-1.5-flash
+FRONTEND_URL=http://localhost:5173
 ```
 
 ## 🏃 Running the Application
@@ -219,25 +195,8 @@ npm run dev
 **Terminal 2 - Frontend:**
 ```bash
 cd frontend
-npm start
-# App runs on http://localhost:3000
-```
-
-### Production Build
-
-**Frontend:**
-```bash
-cd frontend
-npm run build
-# Creates optimized production build in /build
-```
-
-**Backend:**
-```bash
-cd backend
-npm run build
-npm start
-# Runs compiled TypeScript from /dist
+npm run dev
+# App runs on http://localhost:5173
 ```
 
 ## 📚 API Documentation
@@ -245,280 +204,56 @@ npm start
 ### Base URL
 ```
 Development: http://localhost:5000/api
-Production: https://your-backend.render.com/api
+Production: https://rad-final-backend.onrender.com/api
 ```
 
-### Authentication Endpoints
-
-#### Register User
-```http
-POST /api/auth/register
-Content-Type: application/json
-
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "SecurePass123!"
-}
-
-Response: 201 Created
-{
-  "success": true,
-  "data": {
-    "user": { "_id", "name", "email", "role" },
-    "accessToken": "...",
-    "refreshToken": "..."
-  }
-}
-```
-
-#### Login
-```http
-POST /api/auth/login
-Content-Type: application/json
-
-{
-  "email": "john@example.com",
-  "password": "SecurePass123!"
-}
-
-Response: 200 OK
-{
-  "success": true,
-  "data": {
-    "user": { ... },
-    "accessToken": "...",
-    "refreshToken": "..."
-  }
-}
-```
-
-### Project Endpoints
-
-#### Get All Projects
-```http
-GET /api/projects?page=1&limit=10&status=active
-Authorization: Bearer {accessToken}
-
-Response: 200 OK
-{
-  "success": true,
-  "data": {
-    "projects": [...],
-    "pagination": { "total", "page", "pages", "limit" }
-  }
-}
-```
-
-#### Create Project
-```http
-POST /api/projects
-Authorization: Bearer {accessToken}
-Content-Type: application/json
-
-{
-  "name": "Website Redesign",
-  "description": "Redesign company website",
-  "status": "active",
-  "priority": "high"
-}
-
-Response: 201 Created
-```
-
-### Task Endpoints
-
-#### Get All Tasks
-```http
-GET /api/tasks?page=1&limit=10&status=todo&priority=high
-Authorization: Bearer {accessToken}
-
-Response: 200 OK
-```
-
-#### Create Task
-```http
-POST /api/tasks
-Authorization: Bearer {accessToken}
-Content-Type: application/json
-
-{
-  "title": "Design homepage mockup",
-  "description": "Create high-fidelity mockup",
-  "project": "projectId",
-  "status": "todo",
-  "priority": "high",
-  "dueDate": "2024-02-01",
-  "tags": ["design", "ui"]
-}
-
-Response: 201 Created
-```
-
-### Analytics Endpoints
-
-#### Get Dashboard Overview
-```http
-GET /api/analytics/overview
-Authorization: Bearer {accessToken}
-
-Response: 200 OK
-{
-  "success": true,
-  "data": {
-    "totalProjects": 15,
-    "activeProjects": 8,
-    "totalTasks": 127,
-    "completedTasks": 89,
-    "tasksByStatus": {...},
-    "projectsByStatus": {...}
-  }
-}
-```
+### Deployment URLs
+- **Frontend**: [https://rad-final.vercel.app/](https://rad-final.vercel.app/)
+- **Backend API**: [https://rad-final-backend.onrender.com/api](https://rad-final-backend.onrender.com/api)
 
 For complete API documentation, see [SYSTEM_DESIGN.md](./SYSTEM_DESIGN.md#5-api-endpoints-documentation).
 
 ## 🌐 Deployment
 
 ### Frontend Deployment (Vercel)
-
-1. **Push code to GitHub**
-```bash
-git add .
-git commit -m "Ready for deployment"
-git push origin main
-```
-
-2. **Deploy to Vercel**
-   - Go to [vercel.com](https://vercel.com)
-   - Import your GitHub repository
-   - Configure project:
-     - Framework Preset: Create React App
-     - Root Directory: `frontend`
-     - Build Command: `npm run build`
-     - Output Directory: `build`
-   - Add environment variables:
-     - `REACT_APP_API_URL`: Your backend URL
-   - Click "Deploy"
-
-3. **Custom Domain (Optional)**
-   - Go to Project Settings → Domains
-   - Add your custom domain
+The frontend is automatically deployed to Vercel via GitHub integration.
+- **Root Directory**: `frontend`
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
 
 ### Backend Deployment (Render)
-
-1. **Prepare for deployment**
-   - Ensure `package.json` has build script:
-   ```json
-   "scripts": {
-     "build": "tsc",
-     "start": "node dist/server.js"
-   }
-   ```
-
-2. **Deploy to Render**
-   - Go to [render.com](https://render.com)
-   - New → Web Service
-   - Connect your GitHub repository
-   - Configure:
-     - Name: task-management-api
-     - Root Directory: `backend`
-     - Environment: Node
-     - Build Command: `npm install && npm run build`
-     - Start Command: `npm start`
-   - Add environment variables (from .env)
-   - Click "Create Web Service"
-
-3. **Alternative: Railway**
-   - Go to [railway.app](https://railway.app)
-   - New Project → Deploy from GitHub
-   - Select repository and backend directory
-   - Add environment variables
-   - Deploy
-
-### Database Setup (MongoDB Atlas)
-
-1. **Create Cluster**
-   - Go to [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas)
-   - Create free cluster
-   - Choose cloud provider and region
-
-2. **Configure Access**
-   - Database Access → Add Database User
-   - Network Access → Add IP Address (0.0.0.0/0 for development)
-
-3. **Get Connection String**
-   - Clusters → Connect → Connect your application
-   - Copy connection string
-   - Replace `<password>` with your database user password
-   - Add to backend environment variables
-
-### Post-Deployment Checklist
-- [ ] Frontend deployed and accessible
-- [ ] Backend deployed and accessible
-- [ ] Database connected successfully
-- [ ] Environment variables configured
-- [ ] CORS configured for frontend URL
-- [ ] API endpoints responding correctly
-- [ ] Authentication working
-- [ ] Test all CRUD operations
-- [ ] Check analytics dashboard
+The backend is hosted on Render as a Web Service.
+- **Root Directory**: `backend`
+- **Build Command**: `npm install && npm run build`
+- **Start Command**: `npm start`
 
 ## 📸 Screenshots
 
 ### Landing Page
-*Modern, professional landing page with clear value proposition*
+*Modern, professional landing page with AI feature highlights*
 
 ### Dashboard
-*Analytics dashboard with real-time statistics and charts*
+*Analytics dashboard with real-time statistics and spending charts*
 
-### Project Management
-*Intuitive project list with filtering and sorting*
+### Transaction Management
+*Intuitive list and forms for managing income and expenses*
 
-### Task Board
-*Kanban-style task board with drag-and-drop (future enhancement)*
-
-### Analytics
-*Comprehensive analytics with interactive charts*
+### AI Budget Insights
+*Personalized budget recommendations generated by Gemini AI*
 
 ## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+3. Commit your changes
+4. Push to the branch
 5. Open a Pull Request
 
-### Coding Standards
-- Follow TypeScript best practices
-- Use ESLint and Prettier for code formatting
-- Write meaningful commit messages
-- Add comments for complex logic
-- Update documentation for new features
-
 ## 📄 License
-
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 👨‍💻 Author
-
-**Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your.email@example.com
-
-## 🙏 Acknowledgments
-
-- Design inspiration from [Linear](https://linear.app) and [Notion](https://notion.so)
-- Icons from [Lucide](https://lucide.dev)
-- Charts powered by [Recharts](https://recharts.org)
-- Built for RAD Coursework
-
-## 📞 Support
-
-For support, email your.email@example.com or open an issue in the GitHub repository.
+**Tharusha Damsara**
+- GitHub: [@TharushaDamsara](https://github.com/TharushaDamsara)
 
 ---
-
 **Note**: This is a coursework project demonstrating full-stack development skills with modern technologies and industry best practices.
